@@ -26,8 +26,14 @@ import get from 'axios'
 import YouTube from 'react-youtube'
 import Nav from '../../components/Nav'
 
-
-export default function Rolled() {
+/**
+ * Renders the page a victim will see
+ * when they click on a link generated
+ * by the platform. 
+ * 
+ * @returns {React.ReactElement}
+ */
+export default function Rolled(): React.ReactElement {
     const avatarEndpoint = 'https://avatars.dicebear.com/api/initials/'
     const API_BASE = 'http://localhost:3000/roll'
     const { isReady, query } = useRouter()
@@ -36,25 +42,9 @@ export default function Rolled() {
     const [ failedLookup, setFailedLookup ] = useState(false)
 
     // fetched states
-    const [ rank, setRank ] = useState(4)
-    const [ rollerTags, setRollerTags ] = useState([
-        {
-            'title': 'New',
-            'color': 'green'
-        },
-        {
-            'title': 'First Blood',
-            'color': 'red'
-        },
-        {
-            'title': 'Revenge',
-            'color': 'red'
-        },
-    ])
-    const [ rollerMsg, setRollerMsg ] = useState(
-        'An example msg from the roller describing their epic prank ' +
-        'except they go into way more detail to make the test msg bigger'
-    )
+    const [ rank, setRank ] = useState(0)
+    const [ rollerTags, setRollerTags ] = useState([])
+    const [ rollerMsg, setRollerMsg ] = useState('')
 
     /** YouTube player options */
     const opts = {
@@ -92,7 +82,7 @@ export default function Rolled() {
      *     - [0] = username
      *     - [1] = linkID    
     */
-    const fetchLinkDetails = async (linkID) => {
+    const fetchLinkDetails = async (linkID: string) => {
         if (!linkID) return
         
         console.log('[>>] fetching link details', linkID)
@@ -100,9 +90,9 @@ export default function Rolled() {
         try {
             const response: any = await get(`${API_BASE}/details/${linkID}`)
         
-            /** @TODO handle errors with toast */
             if (!response.data) {
                 console.log('[!!] no response from API')
+                setFailedLookup(true)
                 return
             }
             
@@ -124,8 +114,6 @@ export default function Rolled() {
         // check query is ready
         if (isReady) {
             setRoller(query.roller[0])
-            /** @TODO -> if undefined spawn malformed url toast 
-             * and redirect to home */
             fetchLinkDetails(query.roller[1])
         }
     }, [isReady])
@@ -141,7 +129,7 @@ export default function Rolled() {
                     <VStack spacing={5}>
                         {/* THREE JS Rick Astley */}
                         <Box>
-                            {/* @TODO */}
+                            {/** @TODO */}
                         </Box>
                         
                         {/* Heading/Intro */}
@@ -178,7 +166,7 @@ export default function Rolled() {
                                                     rollerTags.map((tag, index) => {
                                                         return (
                                                             <Badge key={index} ml='1' colorScheme={tag.color}>
-                                                                { tag.title }
+                                                                { tag.name }
                                                             </Badge>
                                                         )
                                                     })   

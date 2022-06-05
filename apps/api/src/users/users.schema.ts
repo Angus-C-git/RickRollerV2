@@ -15,7 +15,7 @@ export class User {
   @Prop()
   password: string;
 
-  @Prop({ default: 0, required: false })
+  @Prop({ default: 1, required: false })
   rank: number;
 
   @Prop({ default: 0, required: false })
@@ -27,8 +27,11 @@ export class User {
   @Prop({ default: 0, required: false })
   clicks: number;
 
-//   @Prop({ default: 0, required: false })
-//   netCampaigns: number;
+  @Prop({ default: 0, required: false })
+  previousClicks: number; // within 24hours
+
+  @Prop({ default: new Date(), required: false })
+  clicksUpdated: Date;
 
   @Prop({ default: 0, required: false })
   generatedLinks: number;
@@ -40,9 +43,62 @@ export class User {
     started: Date,
   }];
 
-  @Prop({ default: [], required: false })
+  /**
+   * Temporary storage for clicks
+   * history on a monthly basis
+   */
+  @Prop({ default: [
+      {
+        month: 'Jan',
+        clicks: 0,
+      },
+      {
+        month: 'Feb',
+        clicks: 0,
+      },
+      {
+        month: 'Mar',
+        clicks: 0,
+      },
+      {
+        month: 'Apr',
+        clicks: 0,
+      },
+      {
+        month: 'May',
+        clicks: 0,
+      },
+      {
+        month: 'Jun',
+        clicks: 0,
+      },
+      {
+        month: 'Jul',
+        clicks: 0,
+      },
+      {
+        month: 'Aug',
+        clicks: 0,
+      },
+      {
+        month: 'Sep',
+        clicks: 0,
+      },
+      {
+        month: 'Oct',
+        clicks: 0,
+      },
+      {
+        month: 'Nov',
+        clicks: 0,
+      },
+      {
+        month: 'Dec',
+        clicks: 0,
+      },
+  ], required: false })
   clicksHistory: [{
-    date: Date,
+    month: string,
     clicks: number,
   }];
 

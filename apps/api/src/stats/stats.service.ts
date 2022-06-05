@@ -27,10 +27,20 @@ export class StatsService {
     const user = await this.userModel.findById(uid);
 
     // get the users current rank
-    const currentRank = await this.getRank(uid, user.clicks);
+    let currentRank = await this.getRank(uid, user.clicks);
+    // if no other user has more clicks, the user is the first
+    if (!currentRank) currentRank = 1;
 
     // calculate the rank increase
-    const rankIncrease = (currentRank / user.previousRank) * 100; 
+    let rankIncrease = (currentRank / user.previousRank) * 100; 
+    console.log(`
+        rankIncrease: ${rankIncrease}, 
+        previous rank: ${user.previousRank}, 
+        currentRank: ${currentRank}`
+    );
+    // if the user has not had a previous rank, 
+    // set the rankIncrease to 0
+    if (!user.previousRank) rankIncrease = 0;
 
     // determine if the previous rank should be updated
     // by checking if the rank was updated more 
@@ -44,6 +54,9 @@ export class StatsService {
         user.rankUpdated = now;
         user.save();
     }
+
+    // calculate the click increase
+    let clickIncrease = (user.clicks / user.previousClicks) * 100;
 
     // return the users statistics
     return {

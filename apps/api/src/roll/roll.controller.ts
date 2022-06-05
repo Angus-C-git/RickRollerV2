@@ -11,7 +11,7 @@ export class RollController {
      * Application function responsible for handling clicked links
      * 
      * redirect users to a frontend page with the link 
-     * owners username
+     * owners username and link id
      */
     @Get(':id')
     @Redirect()
@@ -19,7 +19,7 @@ export class RollController {
         const rollers_username = await this.rollService.roll(linkId);
        
         return {
-            url: `http://localhost:3002/rolled/${rollers_username}`,
+            url: `http://localhost:3002/rolled/${rollers_username}/${linkId}`,
         }
     }
 

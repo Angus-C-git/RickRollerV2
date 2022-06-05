@@ -20,11 +20,7 @@ export class RollService {
      *          who owns the link
      * 
      * @todo
-     * 
-     *  + Increase the campaigns click count in the
-     *    users collection
-     *  + Increment the current month's click count in 
-     *    the users clocks history object
+     *  + clean up so two save operations are not needed
      */
     async roll(linkId: string) {
         console.log(`rolling agent -> ${linkId}`);   
@@ -35,7 +31,30 @@ export class RollService {
             },
         });
 
-        console.debug(link);        
+        // find and update the users clicks, clicksHistory and campaigns
+        const user = await this.userModel.findByIdAndUpdate(link.uid, {
+            $inc: {
+                clicks: 1,
+                [`clicksHistory.${new Date().getMonth()}.clicks`]: 1,
+            },
+        });
+
+        // get the index of the campaign in the users 
+        // campaigns list
+        const campaignIndex = user.campaigns.findIndex(
+            campaign => campaign.name === link.campaign
+        );
+        
+        // update the campaign's click count
+        user.campaigns[campaignIndex].clicks += 1;
+        await user.updateOne({
+            $set: {
+                campaigns: user.campaigns,
+            },
+        });
+
+        // console.debug(link);
+        // console.debug(user);        
         return link.username;
     }
 
