@@ -21,20 +21,20 @@ export class User {
   @Prop({ default: 0, required: false })
   previousRank: number; // within 24hours
 
-  @Prop({ default: new Date(), required: false })
-  rankUpdated:  Date; 
-
   @Prop({ default: 0, required: false })
   clicks: number;
 
   @Prop({ default: 0, required: false })
   previousClicks: number; // within 24hours
 
-  @Prop({ default: new Date(), required: false })
-  clicksUpdated: Date;
-
   @Prop({ default: 0, required: false })
   generatedLinks: number;
+
+  @Prop({ default: 0, required: false })
+  previousGeneratedLinks: number; // within 24hours
+
+  @Prop({ default: null, required: false })
+  recordsLastUpdated: Date;
 
   @Prop({ default: [], required: false })
   campaigns: [{

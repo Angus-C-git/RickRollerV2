@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { UserDocument } from '../users/users.schema';
 import { LinkDocument } from '../generate/links.schema';
 import { RollerTags } from './constants';
+import { StatsService } from '../stats/stats.service';
 
 @Injectable()
 export class RollService {
@@ -11,6 +12,7 @@ export class RollService {
     constructor(
         @InjectModel('Link') private readonly linkModel: Model<LinkDocument>,
         @InjectModel('User') private readonly userModel: Model<UserDocument>,
+        private readonly statsService: StatsService,
     ) {}
 
     /**
@@ -73,7 +75,7 @@ export class RollService {
         
         // get user stats
         const user = await this.userModel.findById(link.uid);
-        const { rank } = user;     
+        const rank = await this.statsService.getRank(link.uid, user.clicks);
 
         // determine tags
         const tags = [];

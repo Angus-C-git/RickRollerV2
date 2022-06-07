@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserDocument } from 'src/users/users.schema';
+import { ONE_DAY } from './constants';
 
 @Injectable()
 export class StatsService {
@@ -31,32 +32,70 @@ export class StatsService {
     // if no other user has more clicks, the user is the first
     if (!currentRank) currentRank = 1;
 
-    // calculate the rank increase
-    let rankIncrease = (currentRank / user.previousRank) * 100; 
+    // save the users current rank, for admin
+    // do this synchronously
+    user.updateOne({
+        $set: {
+            rank: currentRank,
+        },
+    });
+
+    // calculate the rank increase as a percentage
+    // increase or decrease based on the previous rank and 
+    // the current rank
+    const rankDifference = user.previousRank - currentRank;
+    let rankIncrease = rankDifference / (
+                          rankDifference > 0 ? user.previousRank : currentRank
+                      ) * 100;
+
+    // round the rank increase to two decimal places
+    rankIncrease = Math.round(rankIncrease * 100) / 100;
+
+    // if the user has not had a previous rank, 
+    // set the rankIncrease to 0
+    if (!user.previousRank) rankIncrease = 0;
+    
     console.log(`
         rankIncrease: ${rankIncrease}, 
         previous rank: ${user.previousRank}, 
         currentRank: ${currentRank}`
     );
-    // if the user has not had a previous rank, 
-    // set the rankIncrease to 0
-    if (!user.previousRank) rankIncrease = 0;
+
+
+    /**
+     * - click increase
+     * - generated links increase
+     */
+
+
+
+ 
+    /** 
+     * @TODO
+     *    - This update should occur at the same time
+     *      as other increases are calculated and
+     *      thus only a single update is needed to 
+     *      update all previous values
+     */
 
     // determine if the previous rank should be updated
     // by checking if the rank was updated more 
     // than 24 hours from now
     const now = new Date();
-    const lastUpdated = new Date(user.rankUpdated);
+    const lastUpdated = new Date(user.recordsLastUpdated);
+    console.debug(`
+        now: ${now},
+        lastUpdated: ${lastUpdated}`
+    );
     const timeDiff = now.getTime() - lastUpdated.getTime();
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    if (diffDays > 1) {
+    if (diffDays > ONE_DAY || !user.previousRank) {
         user.previousRank = currentRank;
-        user.rankUpdated = now;
+        /** @TODO add other priors */
+
+        user.recordsLastUpdated = now;
         user.save();
     }
-
-    // calculate the click increase
-    let clickIncrease = (user.clicks / user.previousClicks) * 100;
 
     // return the users statistics
     return {
@@ -82,23 +121,7 @@ export class StatsService {
           },
       });
 
-      return rank;
+      // ranks start at 1
+      return rank + 1;
   }
 }
-
-
-
-/**
- *  === Calculating Increases ===
- * 
- *  + The rank is calculated by taking the total number of clicks a user has
- *  + Rank increase is regarded as the difference between the current rank and 
- *    the previous rank _stored_ in the database
- * 
- *  + This is to avoid the need for a scheduled job to store the previous rank within 
- *    a particular timeframe
- *  + Thus a users previous rank is stored in the database either when:
- *     1. A user checks their stats and the previous rank has not been updated
- *        within 24hours
- *     2. A users account is created 
- */
