@@ -15,10 +15,10 @@ export class StatsService {
    * @param uid 
    * @returns The users statistics
    * 
-   * @todo 
-   * 
-   *  + Calculate click increase
-   *  + calculate generated link increase
+   * @notes 
+   *    - Percentile increase/decrease relies
+   *      on this method being invoked semi-regularly
+   *      to avoid results becoming too stale 
    */
   async getStats(uid: string) {
 
@@ -55,32 +55,45 @@ export class StatsService {
     // set the rankIncrease to 0
     if (!user.previousRank) rankIncrease = 0;
     
+    // calculate click increase based on the 
+    // percentage increase or decrease between
+    // the current click count and the previous
+    // record
+    const clickDifference = user.clicks - user.previousClicks ;
+    let clickIncrease = clickDifference / (
+                            clickDifference > 0 ? user.previousClicks : user.clicks
+                        ) * 100;
+    // round to two decimal palaces to get a renderable percentile 
+    clickIncrease = Math.round(clickIncrease * 100) / 100;  
+    
+    // perform same calculation for link generation
+    const generatedDifference = user.generatedLinks - user.previousGeneratedLinks; 
+    let generatedIncrease = generatedDifference / (generatedDifference > 0 ? 
+        user.previousGeneratedLinks 
+        : 
+        user.generatedLinks
+    ) * 100;  
+    generatedIncrease = Math.round(generatedIncrease * 100) / 100;
+
+
     console.log(`
         rankIncrease: ${rankIncrease}, 
         previous rank: ${user.previousRank}, 
-        currentRank: ${currentRank}`
-    );
+        currentRank: ${currentRank},
+        clickIncrease: ${clickIncrease},
+        clicks: ${user.clicks},
+        previous clicks: ${user.previousClicks},
+        generated: ${user.generatedLinks},
+        generatedIncrease: ${generatedIncrease},
+        previous generated: ${user.previousGeneratedLinks},
+    `);
 
 
-    /**
-     * - click increase
-     * - generated links increase
-     */
 
-
-
- 
-    /** 
-     * @TODO
-     *    - This update should occur at the same time
-     *      as other increases are calculated and
-     *      thus only a single update is needed to 
-     *      update all previous values
-     */
-
-    // determine if the previous rank should be updated
-    // by checking if the rank was updated more 
-    // than 24 hours from now
+    // determine if the previous stats should be updated
+    // by checking if the last update occurred more 
+    // than 24 hours from now, this facilitates 
+    // future increase calculations
     const now = new Date();
     const lastUpdated = new Date(user.recordsLastUpdated);
     console.debug(`
@@ -91,7 +104,8 @@ export class StatsService {
     const diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
     if (diffDays > ONE_DAY || !user.previousRank) {
         user.previousRank = currentRank;
-        /** @TODO add other priors */
+        user.previousClicks = user.clicks;
+        user.previousGeneratedLinks = user.generatedLinks;
 
         user.recordsLastUpdated = now;
         user.save();
@@ -100,9 +114,11 @@ export class StatsService {
     // return the users statistics
     return {
         generatedLinks: user.generatedLinks,
+        generatedIncrease: generatedIncrease,
         netCampaigns: user.campaigns.length,
         campaigns: user.campaigns,
         clicksHistory: user.clicksHistory,
+        clickIncrease: clickIncrease,
         rank: currentRank,
         rankIncrease: rankIncrease,
         campaignsSince: user.createdAt,
