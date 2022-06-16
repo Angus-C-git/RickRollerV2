@@ -32,6 +32,9 @@ import Nav from '../../components/Nav'
  * by the platform. 
  * 
  * @returns {React.ReactElement}
+ * 
+ * @todo
+ *  - test getting props server side for username
  */
 export default function Rolled(): React.ReactElement {
     const avatarEndpoint = 'https://avatars.dicebear.com/api/initials/'

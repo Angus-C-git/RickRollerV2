@@ -4,18 +4,22 @@ import {
     SimpleGrid
 } from '@chakra-ui/react'
 import { useState } from 'react'
+import get from 'axios'
 import CampaignsTable from '../components/CampaignsTable'
 import ClicksChart from '../components/ClicksChart'
 import Nav from '../components/Nav'
 import StatsPanel from '../components/StatsPanel'
 import StatsPie from '../components/StatsPie'
+import { API_BASE } from '../utils/constants'
 
-
+/** @TODO  - auth context */
 export default function Stats() {
 
-    (function () {
+    (async function () {
         console.log("[>>] loading stats stub")
-        // TODO API CALL
+        
+        // const response =  await get(`${API_BASE}/stats`)
+
     })()
 
     const [ campaignsData, setCampaignsData ] = useState([

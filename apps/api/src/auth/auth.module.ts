@@ -8,6 +8,10 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthController } from './auth.controller';
 
+
+/**
+ * @TODO - update for cookies
+ */
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -15,7 +19,7 @@ import { AuthController } from './auth.controller';
     PassportModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '2d' },
     }),
   ],
   providers: [AuthService, LocalStrategy, JwtStrategy],

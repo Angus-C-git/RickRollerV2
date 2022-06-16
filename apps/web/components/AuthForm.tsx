@@ -15,6 +15,8 @@ import { EmailIcon, LockIcon } from '@chakra-ui/icons'
 import { FaUserAlt } from 'react-icons/fa'
 import { AiOutlineLogin } from 'react-icons/ai'
 import { useState } from 'react'
+import axios from 'axios'
+import { API_BASE } from '../utils/constants'
 
 interface AuthFormProps {
     isRegister?: boolean
@@ -24,7 +26,7 @@ interface AuthFormProps {
     email?: string
     setPassword: Function
     password: string
-    submit: Function
+    submit?: Function
 }
 
 const AuthForm = ({ 
@@ -42,8 +44,91 @@ const AuthForm = ({
     const [ usernameError, setUsernameError ] = useState(false)
     const [ passwordError, setPasswordError ] = useState(false)
     const [ emailError, setEmailError ] = useState(false)
+
+    // load handling
+    const [ isLoading, setIsLoading ] = useState(false)
     
+    const login = () => {
+        console.log('[>>] logging in')
+        axios.post(`${API_BASE}/auth/login`, {
+            username,
+            password
+        },
+        {
+            withCredentials: true
+        }).then(response => {
+            console.log(`[<<] logged in token :: ${response.data.access_token}`)
+            
+            toast({
+                title: 'Login Success',
+                status: 'success',
+                position: 'bottom-left',
+                duration: 5000,
+                isClosable: false
+            })
+
+        }).catch(error => {
+            console.log('[>>] login error')
+            console.log(error)
+
+            // show error toast
+            toast({
+                title: 'Error',
+                description: 'Invalid username or password',
+                position: 'bottom-left',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            })
+
+            // set error state
+            setUsernameError(true)
+            setPasswordError(true)
+
+        }).finally(() => {
+            setIsLoading(false)
+        })
+    }
+
+    const register = () => {
+        console.log('[>>] registering')
+        axios.post(`${API_BASE}/auth/register`, {
+            username,
+            password,
+            email
+        }).then(response => {
+            console.log(`[>>] register success ${response}`)
+
+            toast({
+                title: 'Register Success',
+                status: 'success',
+                position: 'bottom-right',
+                duration: 5000,
+                isClosable: false
+            })
+        }
+        ).catch(error => {
+
+            // show error toast
+            toast({
+                title: 'Error',
+                description: 'Username or email already exists',
+                status: 'error',
+                duration: 9000,
+                isClosable: true,
+            })
+
+            // set error state
+            setUsernameError(true)
+            setEmailError(true)
+            
+        })
+    }
+
     const handleSubmit = () => {
+
+        // start loading
+        setIsLoading(true)
 
         // clear errors
         setUsernameError(false)
@@ -72,8 +157,11 @@ const AuthForm = ({
             return 
         }
 
-        submit()
-    
+        if (isRegister)
+            register()
+        else
+            login()
+
     }
 
     return (
@@ -161,6 +249,7 @@ const AuthForm = ({
                             color='white' 
                             boxShadow='dark-lg'
                             rightIcon={ <AiOutlineLogin /> }
+                            isLoading={isLoading}
                             onClick={() => handleSubmit()}
                         >
                             { isRegister ? 'REGISTER' : 'LOGIN' }

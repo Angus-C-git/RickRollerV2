@@ -29,7 +29,8 @@ export class UsersService {
   async findUser(username: string): Promise<User> {
     const user = await this.userModel.findOne({ username });
     if (!user) {
-      throw new Error('User not found');
+    //   throw new Error('User not found');
+      return null;
     }
 
     return user;

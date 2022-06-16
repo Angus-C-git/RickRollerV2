@@ -5,19 +5,13 @@ import {
     useToast
 } from '@chakra-ui/react';
 import { useState } from 'react'
+import axios from 'axios'
 import AuthForm from '../components/AuthForm'
 import Nav from '../components/Nav'
 
 export default function Login() {
     const [ username, setUsername ] = useState('')
     const [ password, setPassword ] = useState('')
-
-
-
-    const handleLogin = () => {
-        
-        console.log('[>>] logging in')
-    }
 
     return (
         <ChakraProvider>
@@ -50,7 +44,6 @@ export default function Login() {
                             username={username}
                             setPassword={setPassword}
                             password={password}
-                            submit={handleLogin}
                         />
                     </Box>
                 </Box>
