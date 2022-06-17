@@ -53,10 +53,7 @@ const AuthForm = ({
         axios.post(`${API_BASE}/auth/login`, {
             username,
             password
-        },
-        {
-            withCredentials: true
-        }).then(response => {
+        },{ withCredentials: true }).then(response => {
             console.log(`[<<] logged in token :: ${response.data.access_token}`)
             
             toast({
@@ -96,8 +93,8 @@ const AuthForm = ({
             username,
             password,
             email
-        }).then(response => {
-            console.log(`[>>] register success ${response}`)
+        }, { withCredentials: true }).then(response => {
+            console.log(`[>>] register success ${response.data.access_token}`)
 
             toast({
                 title: 'Register Success',

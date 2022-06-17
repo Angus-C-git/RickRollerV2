@@ -1,9 +1,10 @@
-import { Bind, Body, Controller, Post, Request, Res, UseGuards } from '@nestjs/common';
+import { Bind, Body, Controller, Post, Req, Request, Res, UseGuards } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { Response } from 'express';
+import { getCookie } from './cookie.strategy';
 
 @Controller('auth')
 export class AuthController {
@@ -15,24 +16,21 @@ export class AuthController {
     @UseGuards(LocalAuthGuard)
     @Post('login')
     @Bind(Request())
-    async login(req, @Res({ passthrough: true }) res: Response) {
+    async login(req: { user: any; }, @Res({ passthrough: true }) res: Response) {
         const access_token = await this.authService.login(req.user);
-        /** @TODO - relocate  */
-        res.cookie('access_token', access_token.access_token, {
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: false, 
-            maxAge: 1000 * 60 * 60 * 24 * 7,
-            domain: 'localhost',
-            path: '/'
-        });
-
+        const { name, token, options} = getCookie(access_token.access_token);
+        res.cookie(name, token, options);
         return access_token;
     }
 
     @Post('register')
-    async register(@Body() user: RegisterUserDto) {
+    @Bind(Request())
+    async register(@Body() user: RegisterUserDto, @Res({ passthrough: true }) res: Response) {
         const newUser = await this.usersService.create(user);
-        return this.authService.issueToken(newUser);
+        // same behavior as login
+        const access_token = await this.authService.login(newUser);
+        const { name, token, options} = getCookie(access_token.access_token);
+        res.cookie(name, token, options);
+        return access_token;
     }
 }
