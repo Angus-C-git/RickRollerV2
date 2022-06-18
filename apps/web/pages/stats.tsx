@@ -3,7 +3,7 @@ import {
     ChakraProvider, 
     SimpleGrid
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import get from 'axios'
 import CampaignsTable from '../components/CampaignsTable'
 import ClicksChart from '../components/ClicksChart'
@@ -12,98 +12,22 @@ import StatsPanel from '../components/StatsPanel'
 import StatsPie from '../components/StatsPie'
 import { API_BASE } from '../utils/constants'
 
-/** @TODO  - auth context */
+
 export default function Stats() {
 
-    (async function () {
-        console.log("[>>] loading stats stub")
-        
-        // const response =  await get(`${API_BASE}/stats`)
-
-    })()
-
     const [ campaignsData, setCampaignsData ] = useState([
-        {
-            name: 'Email',
-            started: new Date().toLocaleDateString(),
-            total: 100
-        },
-        {
-            name: 'SMS',
-            started: new Date().toLocaleDateString(),
-            total: 200
-        },
-        {
-            name: 'Messenger',
-            started: new Date().toLocaleDateString(),
-            total: 300
-        },
-        {
-            name: 'Embedded',
-            started: new Date().toLocaleDateString(),
-            total: 100
-        },
-        {
-            name: 'Comments',
-            started: new Date().toLocaleDateString(),
-            total: 150
-        },
-        {
-            name: 'Redirect',
-            started: new Date().toLocaleDateString(),
-            total: 50
-        },
+        // {
+        //     name: 'Email',
+        //     started: date,
+        //     clicks: number
+        // },
     ])
 
     const [ clickData, setClickData ] = useState([
-        {
-            name: 'Jan',
-            clicks: 1000,
-        },
-        {
-            name: 'Feb',
-            clicks: 3000,
-        },
-        {
-            name: 'Mar',
-            clicks: 2000,
-        },
-        {
-            name: 'Apr',
-            clicks: 2780,
-        },
-        {
-            name: 'May',
-            clicks: 1890,
-        },
-        {
-            name: 'Jun',
-            clicks: 2390,
-        },
-        {
-            name: 'July',
-            clicks: 2490,
-        },
-        {
-            name: 'Aug',
-            clicks: 1590,
-        },
-        {
-            name: 'Sep',
-            clicks: 2010,
-        },
-        {
-            name: 'Oct',
-            clicks: 490,
-        },
-        {
-            name: 'Nov',
-            clicks: 3490,
-        },
-        {
-            name: 'Dec',
-            clicks: 3590,
-        },
+        // {
+        //     month: string,
+        //     clicks: number,
+        // },
     ])
     
     // tmp hardcoded data
@@ -116,7 +40,32 @@ export default function Stats() {
     const [ campaignCount, setCampaignCount ] = useState(351)
     const [ campaignsSince, setCampaignsSince ] = useState(
         new Date(2021, 5, 1).toLocaleString('default', { month: 'short' })
-    )
+    );
+
+    /** @TODO format dates */
+    // fetch sats from api and update state
+    useEffect(() => {
+        console.log("[>>] loading stats")
+        get(`${API_BASE}/stats`, { withCredentials: true })
+            .then(response => {
+                console.log(`[<<] loaded stats :: ${JSON.stringify(response.data)}`)
+                setGenerated(response.data.generatedLinks)
+                setGeneratedIncrease(response.data.generatedIncrease)
+                setClicked(response.data.clicks)
+                setClickedIncrease(response.data.clickIncrease)
+                setClickData(response.data.clicksHistory)
+                setRank(response.data.rank)
+                setRankIncrease(response.data.rankIncrease)
+                setCampaignsData(response.data.campaigns)
+                setCampaignCount(response.data.netCampaigns)
+                setCampaignsSince(response.data.campaignsSince)
+            }).catch(error => {
+                console.log(`[<<] error loading stats :: ${error}`)
+                /** @TODO -> error msg */
+            }
+        )
+    }, [])
+
 
 
 

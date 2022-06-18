@@ -21,7 +21,7 @@ interface ActiveShapeProps {
     fill: string
     payload: {
         name: string
-        total: number
+        clicks: number
     }
     percent: number
     value: number
@@ -31,7 +31,7 @@ interface StatsPieProps {
     campaignData: Array<{
         name: string
         started: string
-        total: number
+        clicks: number
     }>
 }
 
@@ -105,7 +105,7 @@ const renderActiveShape = ({
                 y={ey} textAnchor={textAnchor} 
                 fill="#4A5568"
             >
-                {`Total ${payload.total}`}
+                {`Total ${payload.clicks}`}
             </text>
             <text 
                 x={ex + (cos >= 0 ? 1 : -1) * 12} 
@@ -150,7 +150,7 @@ const StatsPie = ({ campaignData }: StatsPieProps) => {
                             innerRadius={60}
                             outerRadius={80}
                             fill="#38A169"
-                            dataKey="total"
+                            dataKey="clicks"
                             onMouseEnter={onPieEnter}
                         />
                     </PieChart>

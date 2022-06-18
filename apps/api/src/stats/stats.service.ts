@@ -117,6 +117,7 @@ export class StatsService {
         generatedIncrease: generatedIncrease,
         netCampaigns: user.campaigns.length,
         campaigns: user.campaigns,
+        clicks: user.clicks,
         clicksHistory: user.clicksHistory,
         clickIncrease: clickIncrease,
         rank: currentRank,

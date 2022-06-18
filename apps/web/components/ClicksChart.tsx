@@ -3,7 +3,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsi
 
 interface ClicksChartProps {
     clickData: Array<{
-        name: string
+        month: string
         clicks: number
     }>
 }
@@ -29,7 +29,7 @@ const ClicksChart = ({ clickData }: ClicksChartProps) => {
                         }}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="name" />
+                        <XAxis dataKey="month" />
                         <YAxis />
                         <Tooltip />
                         <Legend />

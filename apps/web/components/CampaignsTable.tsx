@@ -13,7 +13,7 @@ interface CampaignsTableProps {
     campaigns: Array<{
         name: string
         started: string
-        total: number
+        clicks: number
     }>
 }
 
@@ -33,11 +33,11 @@ const CampaignsTable = ({ campaigns }: CampaignsTableProps) => {
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {campaigns.map(({ name, started, total }) => (
+                        {campaigns.map(({ name, started, clicks }) => (
                             <Tr key={name} color='white'>
                                 <Td>{name}</Td>
                                 <Td>{started}</Td>
-                                <Td isNumeric>{total}</Td>
+                                <Td isNumeric>{clicks}</Td>
                             </Tr>
                         ))}
                     </Tbody>
