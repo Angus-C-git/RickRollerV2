@@ -9,8 +9,9 @@ import {
     VStack,
     Icon,
     Button,
-    useToast
+    useToast,
 } from '@chakra-ui/react'
+import { useRouter } from 'next/router'
 import { EmailIcon, LockIcon } from '@chakra-ui/icons'
 import { FaUserAlt } from 'react-icons/fa'
 import { AiOutlineLogin } from 'react-icons/ai'
@@ -40,6 +41,7 @@ const AuthForm = ({
     submit
 }: AuthFormProps ) => {
     const toast = useToast()
+    const router = useRouter()
     // error handling
     const [ usernameError, setUsernameError ] = useState(false)
     const [ passwordError, setPasswordError ] = useState(false)
@@ -47,6 +49,7 @@ const AuthForm = ({
 
     // load handling
     const [ isLoading, setIsLoading ] = useState(false)
+
     
     const login = () => {
         console.log('[>>] logging in')
@@ -63,6 +66,9 @@ const AuthForm = ({
                 duration: 5000,
                 isClosable: false
             })
+
+            // redirect to dashboard
+            router.push('/')
 
         }).catch(error => {
             console.log('[>>] login error')
@@ -103,6 +109,9 @@ const AuthForm = ({
                 duration: 5000,
                 isClosable: false
             })
+
+            // redirect to dashboard
+            router.push('/')
         }
         ).catch(error => {
 

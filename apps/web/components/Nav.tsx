@@ -24,14 +24,16 @@ import { useState } from 'react'
 
 const Nav = () => {
     const router = useRouter()
+    /** @TODO - convert to use custom auth hook */
     const [ isAuthenticated, setIsAuthenticated ] = useState(true)
     const [ showDesktopNav ] = useMediaQuery('(min-width: 768px)')
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const logout = () => {
-        confirm("Logout (stub) ?")
+        confirm("Logout?")
         setIsAuthenticated(false)
-
+        
+        // redirect to login page
         router.push('/login')
     }
 

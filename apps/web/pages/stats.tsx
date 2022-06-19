@@ -31,16 +31,14 @@ export default function Stats() {
     ])
     
     // tmp hardcoded data
-    const [ generated, setGenerated ] = useState(3105)
-    const [ generatedIncrease, setGeneratedIncrease ] = useState(23.36)
-    const [ clicked, setClicked ] = useState(315)
-    const [ clickedIncrease, setClickedIncrease ] = useState(-9.05)
-    const [ rank, setRank  ] = useState(4)
-    const [ rankIncrease, setRankIncrease ] = useState(9.5)
-    const [ campaignCount, setCampaignCount ] = useState(351)
-    const [ campaignsSince, setCampaignsSince ] = useState(
-        new Date(2021, 5, 1).toLocaleString('default', { month: 'short' })
-    );
+    const [ generated, setGenerated ] = useState()
+    const [ generatedIncrease, setGeneratedIncrease ] = useState()
+    const [ clicked, setClicked ] = useState()
+    const [ clickedIncrease, setClickedIncrease ] = useState()
+    const [ rank, setRank  ] = useState()
+    const [ rankIncrease, setRankIncrease ] = useState()
+    const [ campaignCount, setCampaignCount ] = useState()
+    const [ campaignsSince, setCampaignsSince ] = useState()
 
     /** @TODO format dates */
     // fetch sats from api and update state
