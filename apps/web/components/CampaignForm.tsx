@@ -23,7 +23,8 @@ import {
     ModalFooter,
     Center,
     Text,
-    useClipboard
+    useClipboard,
+    Textarea
 } from '@chakra-ui/react'
 import { 
     AddIcon, 
@@ -68,6 +69,7 @@ const CampaignForm = () => {
     const [ selectedTags, setSelectedTags ] = useState([])
     const [ linkName, setLinkName ] = useState('')
     const [ showAddTag, setShowAddTag ] = useState(false)
+    const [ message, setMessage ] = useState('')
 
     // link gen handlers
     const [ link, setLink ] = useState('')
@@ -186,13 +188,6 @@ const CampaignForm = () => {
             return
         }
 
-
-        // TODO: POST to API
-        console.log('[>>] form validated, sending request')
-        console.log('[>>] selected campaign:', selectedCampaign)
-        console.log('[>>] selected tags:', selectedTags)
-        console.log('[>>] link name:', linkName)
-
         // toast success
         toast({
             title: 'Generating link!',
@@ -207,6 +202,7 @@ const CampaignForm = () => {
             name: linkName,
             campaign: selectedCampaign,
             tags: selectedTags,
+            msg: message,
         }, {withCredentials: true} ).then(res => {
             console.log('[>>] response:', res)
             setLink(res.data.url)
@@ -500,6 +496,21 @@ const CampaignForm = () => {
             </Box>
             }
 
+            {/* MESSAGE ZONE */}
+            { !linkPanel &&
+                <Box m='5'>
+                    <Center>
+                        <Textarea 
+                            size='lg' 
+                            placeholder='custom message' 
+                            color='white' 
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                        />
+                    </Center>
+                </Box>
+            }
+
             {/* LINK DISPLAY */}
             { linkPanel &&
                 <Box mt='100' mb='155'>
@@ -520,6 +531,8 @@ const CampaignForm = () => {
                     </Center>
                 </Box>
             }            
+
+
 
             {/* GENERATE BUTTON */}
             <Box display='flex' justifyContent='center'>
