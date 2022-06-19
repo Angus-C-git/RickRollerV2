@@ -8,6 +8,7 @@ import axios from 'axios';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/users/users.schema';
+import { DATE_OPTIONS } from 'src/globals/dates';
 
 @Injectable()
 export class GenerateService {
@@ -117,7 +118,7 @@ export class GenerateService {
 		user.campaigns.push({
 			name: linkDetails.campaign,
 			clicks: 0,
-			started: new Date(),
+			started: new Date().toLocaleDateString('en-US', DATE_OPTIONS)
 		});
 
 		// save the user

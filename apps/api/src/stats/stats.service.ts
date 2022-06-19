@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { DATE_OPTIONS } from 'src/globals/dates';
 import { UserDocument } from 'src/users/users.schema';
 import { ONE_DAY } from './constants';
+
 
 @Injectable()
 export class StatsService {
@@ -122,7 +124,7 @@ export class StatsService {
         clickIncrease: clickIncrease,
         rank: currentRank,
         rankIncrease: rankIncrease,
-        campaignsSince: user.createdAt,
+        campaignsSince: user.createdAt.toLocaleDateString('en-us', DATE_OPTIONS),
     };
   }
 

@@ -40,7 +40,7 @@ export class User {
   campaigns: [{
     name: string,
     clicks: number,
-    started: Date,
+    started: string,
   }];
 
   /**

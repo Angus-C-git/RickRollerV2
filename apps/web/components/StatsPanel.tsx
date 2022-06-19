@@ -24,10 +24,10 @@ interface StatsPanelProps {
     campaignsSince: string
 }
 
-const getCurrentDate = () => {
-    const now = new Date()
-    const day = (now.getDay() < 10) ? `0${now.getDay()}` : now.getDay()  
-    return `${now.toLocaleString('default', {month: 'short'})} ${day}`
+const dateOptions: any = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
 }
 
 const StatsPanel = ({
@@ -40,6 +40,9 @@ const StatsPanel = ({
     campaignCount,
     campaignsSince
 }: StatsPanelProps) => {
+
+    // set the current date as now
+    const currentDate = new Date().toLocaleDateString('en-us', dateOptions)
 
     return (
         <Box>
@@ -84,7 +87,7 @@ const StatsPanel = ({
                                 <StatNumber>#{campaignCount}</StatNumber>
                                 {/* TODO: date range start */}
                                 <StatHelpText>
-                                    {campaignsSince} 02 - {getCurrentDate()} 
+                                    {campaignsSince} - {currentDate} 
                                 </StatHelpText>
                             </Stat>
                         </Box>
