@@ -1,4 +1,4 @@
-import { Bind, Body, Controller, Post, Request, UseGuards} from '@nestjs/common';
+import { Bind, Body, Controller, Get, Post, Request, UseGuards} from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { GenerateService } from './generate.service';
 
@@ -26,6 +26,23 @@ export class GenerateController {
             req.user.uid,
             req.user.username
         );
+    }
+
+    /**
+     * Get a users campaigns and return their names
+     * 
+     * @param req
+     * @returns
+     * @memberof GenerateController
+     * @returns A list of campaigns for the user
+     *         or an empty list if the user has no campaigns
+     *        or an error if the user is not authenticated
+     */
+    @UseGuards(JwtAuthGuard)
+    @Get('options')
+    @Bind(Request())
+    async getOptions(@Request() req: any) {
+        return this.generateService.getOptions(req.user.uid);
     }
 }
 

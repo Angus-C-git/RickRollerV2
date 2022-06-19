@@ -35,4 +35,18 @@ export class UsersService {
 
     return user;
   }
+
+  /**
+   * Add a tag to a user's list of tags
+   */
+  async addTag(uid: string, tag: string): Promise<string[]> {
+    console.log('[>>] adding tag for', uid, tag);
+
+    const user = await this.userModel.findByIdAndUpdate(uid, { $addToSet: { tags: tag } });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user.tags;
+  }
 }

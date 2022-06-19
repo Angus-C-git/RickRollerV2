@@ -1,9 +1,24 @@
-import { Controller, Post, Get, Body } from '@nestjs/common';
+import { Controller, Post, UseGuards, Bind, Request, Body } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { RegisterUserDto } from '../auth/dto/register-user.dto';
-import { User } from './users.schema';
-import { LoginUserDto } from './dto/login-user.dto';
-// import bcrypt from 'bcrypt';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Controller('user')
-export class UsersController {}
+export class UsersController {
+
+    constructor(
+        private readonly usersService: UsersService,
+    ) {}
+
+    /**
+     * Update a user's tags
+     * @param req The request object
+     * @returns The updated tags list
+     * @memberof UsersController
+     */
+    @UseGuards(JwtAuthGuard)
+    @Post('tags')
+    @Bind(Request())
+    async addTags(@Request() req: any): Promise<string[]> {
+        return this.usersService.addTag(req.user.uid, req.body.tag);
+    }
+}

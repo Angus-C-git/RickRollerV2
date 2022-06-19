@@ -35,6 +35,9 @@ export class User {
 
   @Prop({ default: null, required: false })
   recordsLastUpdated: Date;
+  
+  @Prop({ default: null, required: false })
+  tags: string[];
 
   @Prop({ default: [], required: false })
   campaigns: [{

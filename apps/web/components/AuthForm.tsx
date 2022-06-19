@@ -52,11 +52,10 @@ const AuthForm = ({
 
     
     const login = () => {
-        console.log('[>>] logging in')
         axios.post(`${API_BASE}/auth/login`, {
             username,
             password
-        },{ withCredentials: true }).then(response => {
+        }, {withCredentials: true} ).then(response => {
             console.log(`[<<] logged in token :: ${response.data.access_token}`)
             
             toast({

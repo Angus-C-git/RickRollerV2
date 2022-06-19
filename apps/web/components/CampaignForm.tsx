@@ -33,8 +33,9 @@ import {
     LinkIcon, 
     RepeatIcon 
 } from '@chakra-ui/icons'
-import { useState, useRef } from 'react'
-
+import { useState, useRef, useEffect } from 'react'
+import { API_BASE } from '../utils/constants'
+import axios from 'axios'
 
 
 const CampaignForm = () => {
@@ -43,6 +44,9 @@ const CampaignForm = () => {
     
     const initialRef = useRef()
     const finalRef = useRef()
+
+    // handle loading 
+    const [isLoading, setIsLoading] = useState(false)
 
     const [ newCampaign, setNewCampaign ] = useState(false)
     const [ campaignName, setCampaignName ] = useState('')
@@ -66,7 +70,7 @@ const CampaignForm = () => {
     const [ showAddTag, setShowAddTag ] = useState(false)
 
     // link gen handlers
-    const [ link, setLink ] = useState('http://example.com/1283hadgvahgf1?id=12688615')
+    const [ link, setLink ] = useState('')
     const [ linkPanel, setLinkPanel ] = useState(false)
     const [ generating, setGenerating ] = useState(false)
     const { hasCopied, onCopy } = useClipboard(link)
@@ -77,6 +81,20 @@ const CampaignForm = () => {
     const [ selectedCampaignError, setSelectedCampaignError ] = useState(false)
     const [ linkNameError, setLinkNameError ] = useState(false)
     const [ newTagError, setNewTagError ] = useState(false)
+
+    // populate tags and campaigns from server
+    useEffect(() => {
+        axios.get(`${API_BASE}/generate/options`, {withCredentials: true}).then(response => {
+            setCampaigns(response.data.campaigns)
+            // add custom tags to default set
+            if (response.data.tags.length > 0)
+                setTags([...tags, ...response.data.tags])
+        }).catch(error => {
+            console.log(error)
+        }).finally(() => {
+            setIsLoading(false)
+        }) 
+    }, [])
 
     // tag selection handler
     const handleTagSelection = (tag: string) => {
@@ -183,13 +201,28 @@ const CampaignForm = () => {
             duration: 1000,
             isClosable: true,
         })
-
-        // tmp pause to simulate loading
-        // API call
-        setTimeout(() => {
-            setGenerating(false)
+        
+        // call API to generate link
+        axios.post(`${API_BASE}/generate/link`, {
+            name: linkName,
+            campaign: selectedCampaign,
+            tags: selectedTags,
+        }, {withCredentials: true} ).then(res => {
+            console.log('[>>] response:', res)
+            setLink(res.data.url)
             setLinkPanel(true)
-        }, 2000)
+        }).catch(err => {
+            console.log('[>>] error:', err)
+            toast({
+                title: 'Error generating link',
+                status: 'error',
+                position: 'bottom-left',
+                duration: 1000,
+                isClosable: true,
+            })
+        }).finally(() => {
+            setGenerating(false)
+        })
     }
 
     const handleAddTag = () => {
@@ -231,19 +264,34 @@ const CampaignForm = () => {
             return
         }
 
-        
-        // update tags
-        setTags([...tags, newTagName])
-        handleClose()
+        // save tag to users profile
+        axios.post(`${API_BASE}/user/tags`, {
+            tag: newTagName,
+        }, {withCredentials: true} ).then(res => {
+            console.log('[>>] response:', res)
 
-        // alert success
-        toast({
-            title: 'Tag Created',
-            status: 'success',
-            position: 'bottom-left',
-            duration: 1500,
-            isClosable: true,
-        })
+            // update tags
+            setTags([...tags, newTagName])
+            handleClose()
+
+            // alert success
+            toast({
+                title: 'Tag Created',
+                status: 'success',
+                position: 'bottom-left',
+                duration: 1500,
+                isClosable: true,
+            })
+        }).catch(err => {
+            console.log('[>>] error:', err)
+            toast({
+                title: 'Error creating tag',
+                status: 'error',
+                position: 'bottom-left',
+                duration: 1500,
+                isClosable: true,
+            })
+        }) 
     }
 
     const copyLink = () => {
