@@ -24,7 +24,9 @@ import {
     Center,
     Text,
     useClipboard,
-    Textarea
+    Textarea,
+    Spinner,
+    VStack
 } from '@chakra-ui/react'
 import { 
     AddIcon, 
@@ -86,6 +88,7 @@ const CampaignForm = () => {
 
     // populate tags and campaigns from server
     useEffect(() => {
+        setIsLoading(true)
         axios.get(`${API_BASE}/generate/options`, {withCredentials: true}).then(response => {
             setCampaigns(response.data.campaigns)
             // add custom tags to default set
@@ -299,6 +302,15 @@ const CampaignForm = () => {
             duration: 1500,
             isClosable: true,
         })
+    }
+
+
+    if (isLoading) {
+        return (
+            <Box display='flex'> 
+                <Spinner size='xl' thickness='4px' color='teal'/>
+            </Box>
+        )
     }
 
 

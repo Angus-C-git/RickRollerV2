@@ -1,7 +1,9 @@
 import {
     Box, 
+    Center, 
     ChakraProvider, 
-    SimpleGrid
+    SimpleGrid,
+    Spinner
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import get from 'axios'
@@ -40,10 +42,13 @@ export default function Stats() {
     const [ campaignCount, setCampaignCount ] = useState()
     const [ campaignsSince, setCampaignsSince ] = useState()
 
+    // load handler
+    const [ isLoading, setIsLoading ] = useState(false)
+
     /** @TODO format dates */
-    // fetch sats from api and update state
+    // fetch stats from api and update state
     useEffect(() => {
-        console.log("[>>] loading stats")
+        setIsLoading(true)
         get(`${API_BASE}/stats`, { withCredentials: true })
             .then(response => {
                 console.log(`[<<] loaded stats :: ${JSON.stringify(response.data)}`)
@@ -59,12 +64,21 @@ export default function Stats() {
                 setCampaignsSince(response.data.campaignsSince)
             }).catch(error => {
                 console.log(`[<<] error loading stats :: ${error}`)
-                /** @TODO -> error msg */
-            }
-        )
+                /** @TODO -> use toast for error */
+            }).finally(() => {
+                setIsLoading(false)
+            })
+
     }, [])
 
 
+    if (isLoading){
+        return (
+            <Center h='100vh' bg='gray.700'>
+                <Spinner size='xl' color='teal' thickness='4px' />
+            </Center>
+        )
+    }
 
 
     return (

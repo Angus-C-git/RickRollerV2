@@ -18,13 +18,22 @@ import {
     AlertTitle,
     AlertIcon,
     CloseButton,
+    toast,
+    useToast,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { BsFillLightningChargeFill } from 'react-icons/bs'
-import get from 'axios'
+import axios from 'axios'
 import YouTube from 'react-youtube'
 import Nav from '../../components/Nav'
+
+
+interface LinkInfo {
+    rank: number;
+    tags: string[];
+    msg: string;
+}
 
 /**
  * Renders the page a victim will see
@@ -36,11 +45,11 @@ import Nav from '../../components/Nav'
  * @todo
  *  - test getting props server side for username
  */
-export default function Rolled(): React.ReactElement {
+export default function Rolled({ roller, linkID }): React.ReactElement {
     const avatarEndpoint = 'https://avatars.dicebear.com/api/initials/'
     const API_BASE = 'http://localhost:3000/roll'
-    const { isReady, query } = useRouter()
-    const [ roller, setRoller ] = useState('')
+    const toast = useToast()
+
     const [ hasLoaded, setHasLoaded ] = useState(false)
     const [ failedLookup, setFailedLookup ] = useState(false)
 
@@ -85,41 +94,29 @@ export default function Rolled(): React.ReactElement {
      *     - [0] = username
      *     - [1] = linkID    
     */
-    const fetchLinkDetails = async (linkID: string) => {
-        if (!linkID) return
-        
-        console.log('[>>] fetching link details', linkID)
-
-        try {
-            const response: any = await get(`${API_BASE}/details/${linkID}`)
-        
-            if (!response.data) {
-                console.log('[!!] no response from API')
-                setFailedLookup(true)
-                return
-            }
-            
-            const { rank, tags, msg } = response.data
-            console.log(`[<<] fetched link details, response: ${rank}, ${tags}, ${msg}`)
-
-            setRank(rank)
-            setRollerTags(tags)
-            setRollerMsg(msg)
-
-            setHasLoaded(true)
-        } catch (error) {
-            console.log('[!!] error fetching link details', error)
-            setFailedLookup(true)
-        }
-    }
-
     useEffect(() => {
-        // check query is ready
-        if (isReady) {
-            setRoller(query.roller[0])
-            fetchLinkDetails(query.roller[1])
-        }
-    }, [isReady])
+        setHasLoaded(false)
+        if (linkID)
+            axios.get(`${API_BASE}/details/${linkID}`)
+                .then(res => {
+                    const { rank, tags, msg }: any = res.data
+                    console.log("RES :: ", res)
+                    setRank(rank)
+                    setRollerTags(tags)
+                    setRollerMsg(msg)
+                    setHasLoaded(true)
+                }).catch(err => {
+                    console.log('[>>] tampering detected', err)
+                    toast({
+                        title: 'Service Error',
+                        description: 'Tampering or service error ;)',
+                        status: 'error',
+                        position: 'bottom-left',
+                        duration: 1000,
+                    })
+                })
+    }, [linkID])
+    
 
     return (
         <ChakraProvider>
@@ -277,4 +274,23 @@ export default function Rolled(): React.ReactElement {
             </Box>
         </ChakraProvider>
     )    
+}
+
+
+
+export async function getStaticPaths() {
+    return {
+        paths: [],
+        fallback: true
+    }
+}
+
+export async function getStaticProps({ params }) {
+    // console.log("PARAMS ::", params)
+    return { 
+        props: {
+            roller: params.roller[0],
+            linkID: params.roller[1]
+        } 
+    }
 }

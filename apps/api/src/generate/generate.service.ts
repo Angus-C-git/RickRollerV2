@@ -67,7 +67,7 @@ export class GenerateService {
     const body = {
       'dynamicLinkInfo': {
         'domainUriPrefix': DOMAIN_URI_PREFIX,
-        'link': `${LINK_PREFIX}?uid=${newLink._id}`,
+        'link': `${LINK_PREFIX}/${newLink._id}`,
       }
     }
 

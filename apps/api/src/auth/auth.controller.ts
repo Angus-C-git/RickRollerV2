@@ -5,6 +5,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { Response } from 'express';
 import { getCookie } from './cookie.strategy';
+import { LoginUserDto } from 'src/users/dto/login-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -13,11 +14,14 @@ export class AuthController {
         private readonly authService: AuthService,
     ) {}
 
-    @UseGuards(LocalAuthGuard)
     @Post('login')
     @Bind(Request())
-    async login(req: { user: any; }, @Res({ passthrough: true }) res: Response) {
-        const access_token = await this.authService.login(req.user);
+    async login(@Body() user: LoginUserDto, @Res({ passthrough: true }) res: Response) {
+        const valid = await this.authService.validateUser(user.username, user.password);
+        if (!valid)
+            throw new Error('Unauthorized')
+            
+        const access_token = await this.authService.login(user);
         const { name, token, options} = getCookie(access_token.access_token);
         res.cookie(name, token, options);
         return access_token;
