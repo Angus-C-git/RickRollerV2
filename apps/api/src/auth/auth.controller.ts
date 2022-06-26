@@ -4,8 +4,9 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './local-auth.guard';
 import { Response } from 'express';
-import { getCookie } from './cookie.strategy';
+import { DEFAULT_NAME, getCookie } from './cookie.strategy';
 import { LoginUserDto } from 'src/users/dto/login-user.dto';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -17,11 +18,12 @@ export class AuthController {
     @Post('login')
     @Bind(Request())
     async login(@Body() user: LoginUserDto, @Res({ passthrough: true }) res: Response) {
-        const valid = await this.authService.validateUser(user.username, user.password);
-        if (!valid)
+        const validUser = await this.authService.validateUser(user.username, user.password);
+        /** @TODO - better handling ?  */
+        if (!validUser)
             throw new Error('Unauthorized')
-            
-        const access_token = await this.authService.login(user);
+
+        const access_token = await this.authService.login(validUser);
         const { name, token, options} = getCookie(access_token.access_token);
         res.cookie(name, token, options);
         return access_token;
@@ -36,5 +38,20 @@ export class AuthController {
         const { name, token, options} = getCookie(access_token.access_token);
         res.cookie(name, token, options);
         return access_token;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('logout')
+    async logout(@Res({ passthrough: true }) res: Response) {
+        res.clearCookie(DEFAULT_NAME);
+        return true;
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('status')
+    async status() {
+        return {
+            status: true
+        };
     }
 }

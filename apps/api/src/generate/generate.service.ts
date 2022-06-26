@@ -141,8 +141,13 @@ export class GenerateService {
    */
   async getOptions(uid: string) {
     const user = await this.userModel.findById(uid);
+    let campaigns = [];
+    if (user.campaigns) {
+        user.campaigns.map(campaign => campaign.name)
+    }
+
     return {
-      campaigns: user.campaigns.map(campaign => campaign.name),
+      campaigns: campaigns,
       tags: user.tags,
     }
   }

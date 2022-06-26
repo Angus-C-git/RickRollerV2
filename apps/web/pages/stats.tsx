@@ -13,9 +13,12 @@ import Nav from '../components/Nav'
 import StatsPanel from '../components/StatsPanel'
 import StatsPie from '../components/StatsPie'
 import { API_BASE } from '../utils/constants'
+import { useAuth } from '../hooks/auth'
 
 
 export default function Stats() {
+    // check auth state
+    const authenticated = useAuth({ redirectTo: '/login' })
 
     const [ campaignsData, setCampaignsData ] = useState([
         // {

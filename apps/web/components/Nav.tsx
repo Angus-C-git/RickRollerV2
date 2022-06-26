@@ -20,21 +20,30 @@ import { RepeatIcon, HamburgerIcon } from '@chakra-ui/icons'
 import { useRouter } from 'next/router' 
 import Logo from './Logo'
 import { useState } from 'react'
-
+import { useAuth } from '../hooks/auth'
+import axios from 'axios'
+import { API_BASE } from '../utils/constants'
 
 const Nav = () => {
     const router = useRouter()
-    /** @TODO - convert to use custom auth hook */
-    const [ isAuthenticated, setIsAuthenticated ] = useState(true)
+    const authenticated = useAuth({})
+
     const [ showDesktopNav ] = useMediaQuery('(min-width: 768px)')
     const { isOpen, onOpen, onClose } = useDisclosure()
 
     const logout = () => {
-        confirm("Logout?")
-        setIsAuthenticated(false)
-        
-        // redirect to login page
-        router.push('/login')
+        const actionLogout = confirm("Logout?")
+        if (!actionLogout){
+            return
+        }
+        // setIsAuthenticated(false)
+        axios.post(`${API_BASE}/auth/logout`, {}, {withCredentials: true})
+            .then(() => {
+                // redirect to login page
+                router.push('/login')
+            }).catch(error => {
+                console.log('[>>] already signed out or service error')
+            })
     }
 
     const AuthenticatedButtons = (
@@ -120,7 +129,7 @@ const Nav = () => {
                         <Divider />
                     </Box>
                     <VStack spacing={6} align='stretch' m={5}>
-                        { isAuthenticated ? 
+                        { authenticated ? 
                             AuthenticatedButtons
                         :
                             UnauthenticatedButtons
@@ -151,7 +160,7 @@ const Nav = () => {
                 <Logo />
                 {showDesktopNav &&
                     <HStack spacing={3}>
-                        { isAuthenticated ? 
+                        { authenticated ? 
                             AuthenticatedButtons
                         :
                             UnauthenticatedButtons

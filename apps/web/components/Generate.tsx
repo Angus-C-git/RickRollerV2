@@ -3,6 +3,8 @@ import CampaignForm from '../components/CampaignForm'
 
 
 const Generate = () => {
+
+
     return (
         <Box 
             display='flex'
