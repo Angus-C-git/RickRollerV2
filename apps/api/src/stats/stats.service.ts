@@ -67,7 +67,9 @@ export class StatsService {
                         ) * 100;
     // round to two decimal palaces to get a renderable percentile 
     clickIncrease = Math.round(clickIncrease * 100) / 100;  
-    
+    if (user.clicks == 1) clickIncrease = 100;
+    if (user.clicks == 0) clickIncrease = 0;
+
     // perform same calculation for link generation
     const generatedDifference = user.generatedLinks - user.previousGeneratedLinks; 
     let generatedIncrease = generatedDifference / (generatedDifference > 0 ? 
@@ -76,7 +78,8 @@ export class StatsService {
         user.generatedLinks
     ) * 100;  
     generatedIncrease = Math.round(generatedIncrease * 100) / 100;
-
+    if (user.generatedLinks == 1) generatedIncrease = 100;
+    if (user.generatedLinks == 0) generatedIncrease = 0;
 
     console.log(`
         rankIncrease: ${rankIncrease}, 

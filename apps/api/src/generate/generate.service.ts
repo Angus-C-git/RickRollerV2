@@ -143,7 +143,7 @@ export class GenerateService {
     const user = await this.userModel.findById(uid);
     let campaigns = [];
     if (user.campaigns) {
-        user.campaigns.map(campaign => campaign.name)
+        campaigns = user.campaigns.map(campaign => campaign.name)
     }
 
     return {

@@ -1,6 +1,4 @@
-import { Button } from "ui"
 import { Box } from '@chakra-ui/react'
-import GlobalContext from '../utils/global-context'
 import Nav from '../components/Nav'
 import GeneratePanel from '../components/Generate'
 import { useAuth } from "../hooks/auth"

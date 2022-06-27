@@ -26,7 +26,11 @@ import {
     useClipboard,
     Textarea,
     Spinner,
-    VStack
+    VStack,
+    Skeleton,
+    Stack,
+    HStack,
+    SkeletonCircle
 } from '@chakra-ui/react'
 import { 
     AddIcon, 
@@ -240,6 +244,7 @@ const CampaignForm = () => {
         setSelectedCampaign('')
         setLinkPanel(false)
         setSelectedTags([])
+        setMessage('')
     }
 
     const handleAddTagConfirm = () => {
@@ -307,9 +312,58 @@ const CampaignForm = () => {
 
     if (isLoading) {
         return (
-            <Box display='flex'> 
-                <Spinner size='xl' thickness='4px' color='teal'/>
-            </Box>
+            <Box m='5'> 
+                <VStack>
+                    {/* Inputs */}
+                    <HStack>
+                        <Box minW={160}>
+                            <Skeleton height='50px' borderRadius={8} />
+                         </Box>
+                         <Box minW={160}>
+                            <Skeleton height='50px' borderRadius={8} />
+                        </Box>
+                    </HStack>
+                    {/* Tags */}
+                    <HStack>
+                        <Box minW='74px'>
+                            <Skeleton height='40px' borderRadius={50} />
+                        </Box>
+                        <Box minW='74px'>
+                            <Skeleton height='40px' borderRadius={50} />
+                        </Box>
+                         <Box minW='74px'>
+                            <Skeleton height='40px' borderRadius={50} />
+                        </Box>
+                        <Box minW='74px'>
+                            <Skeleton height='40px' borderRadius={50} />
+                        </Box>
+                    </HStack>
+                    <HStack>
+                        <Box minW='74px'>
+                            <Skeleton height='40px' borderRadius={50} />
+                        </Box>
+                        <Box minW='74px'>
+                            <Skeleton height='40px' borderRadius={50} />
+                        </Box>
+                         <Box minW='73px'>
+                            <Skeleton height='40px' borderRadius={50} />
+                        </Box>
+                        <Box minW='70px'>
+                            <SkeletonCircle size='40px' />
+                        </Box>
+                    </HStack>
+
+                    {/* MSG Area */}
+                    <Box pt='25' minW={310}>
+                        <Skeleton height='70px' borderRadius={8} />
+                    </Box>  
+
+                    {/* Generate button */}
+                    <Box pt='20' minW={110}>
+                        <Skeleton height='45px' borderRadius={5} />
+                    </Box>  
+                </VStack>
+           </Box>
         )
     }
 

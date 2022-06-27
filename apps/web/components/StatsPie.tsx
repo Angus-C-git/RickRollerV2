@@ -138,26 +138,31 @@ const StatsPie = ({ campaignData }: StatsPieProps) => {
                 Campaign Overview
             </Heading>
             <Center>
-                <ResponsiveContainer width="95%" height={300}>
-                    <PieChart>
-                        <Pie
-                            data={campaignData}
-                            paddingAngle={5}
-                            activeIndex={activeIndex}
-                            activeShape={renderActiveShape}
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            fill="#38A169"
-                            dataKey="clicks"
-                            onMouseEnter={onPieEnter}
-                        />
-                    </PieChart>
-                </ResponsiveContainer>
+                {campaignData.length > 0 ? (
+                        <ResponsiveContainer width="95%" height={300}>
+                            <PieChart>
+                                <Pie
+                                    data={campaignData}
+                                    paddingAngle={5}
+                                    activeIndex={activeIndex}
+                                    activeShape={renderActiveShape}
+                                    cx="50%"
+                                    cy="50%"
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    fill="#38A169"
+                                    dataKey="clicks"
+                                    onMouseEnter={onPieEnter}
+                                />
+                            </PieChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <Heading as='h1' size='xl' color='gray.300' mt='150px'>
+                            No Campaigns Yet
+                        </Heading>
+                    )}
+
             </Center>
-
-
         </Box>
     )
 } 

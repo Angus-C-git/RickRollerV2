@@ -48,7 +48,6 @@ export default function Stats() {
     // load handler
     const [ isLoading, setIsLoading ] = useState(false)
 
-    /** @TODO format dates */
     // fetch stats from api and update state
     useEffect(() => {
         setIsLoading(true)
