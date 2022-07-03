@@ -182,10 +182,9 @@ const AuthForm = ({
                                     Username
                                 </FormLabel>
                                 <InputGroup>
-                                    <InputLeftElement
-                                        pointerEvents='none'
-                                        children={<Icon as={FaUserAlt} color='gray.300' />}
-                                    />
+                                    <InputLeftElement pointerEvents='none'>
+                                        <Icon as={FaUserAlt} color='gray.300' />
+                                    </InputLeftElement>
                                     <Input 
                                         name='username' 
                                         type='text' 
@@ -205,10 +204,9 @@ const AuthForm = ({
                                         Email
                                     </FormLabel>
                                     <InputGroup>
-                                        <InputLeftElement
-                                            pointerEvents='none'
-                                            children={<EmailIcon color='gray.300' />}
-                                        />
+                                        <InputLeftElement pointerEvents='none'>
+                                            <EmailIcon color='gray.300' />
+                                        </InputLeftElement>
                                         <Input 
                                             name='email' 
                                             type='email' 
@@ -228,10 +226,9 @@ const AuthForm = ({
                                     Password
                                 </FormLabel>
                                 <InputGroup>
-                                    <InputLeftElement
-                                        pointerEvents='none'
-                                        children={<LockIcon color='gray.300' />}
-                                    />
+                                    <InputLeftElement pointerEvents='none' >
+                                        <LockIcon color='gray.300' />
+                                    </InputLeftElement>
                                     <Input 
                                         name='password' 
                                         type='password' 

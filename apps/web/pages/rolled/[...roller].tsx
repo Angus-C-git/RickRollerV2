@@ -35,6 +35,38 @@ interface LinkInfo {
     msg: string;
 }
 
+
+interface PlayerVars {
+  autoplay?: 0 | 1;
+  cc_load_policy?: 1;
+  color?: 'red' | 'white';
+  controls?: 0 | 1 | 2;
+  disablekb?: 0 | 1;
+  enablejsapi?: 0 | 1;
+  end?: number;
+  fs?: 0 | 1;
+  hl?: string;
+  iv_load_policy?: 1 | 3;
+  list?: string;
+  listType?: 'playlist' | 'search' | 'user_uploads';
+  loop?: 0 | 1;
+  modestbranding?: 1;
+  origin?: string;
+  playlist?: string;
+  playsinline?: 0 | 1;
+  rel?: 0 | 1;
+  showinfo?: 0 | 1;
+  start?: number;
+  mute?: 0 | 1;
+}
+
+export interface Options {
+  height?: string;
+  width?: string;
+  host?: string;
+  playerVars?: PlayerVars;
+}
+
 /**
  * Renders the page a victim will see
  * when they click on a link generated
@@ -59,14 +91,14 @@ export default function Rolled({ roller, linkID }): React.ReactElement {
     const [ rollerMsg, setRollerMsg ] = useState('')
 
     /** YouTube player options */
-    const opts = {
+    const opts: Options = {
         playerVars: {
             autoplay: 1,
             controls: 0,
             showinfo: 0,
             modestbranding: 1,
             mute: 0
-        },
+        }
     }
 
     const onReady = (event) => {
@@ -100,7 +132,6 @@ export default function Rolled({ roller, linkID }): React.ReactElement {
             axios.get(`${API_BASE}/details/${linkID}`)
                 .then(res => {
                     const { rank, tags, msg }: any = res.data
-                    console.log("RES :: ", res)
                     setRank(rank)
                     setRollerTags(tags)
                     setRollerMsg(msg)
@@ -115,7 +146,7 @@ export default function Rolled({ roller, linkID }): React.ReactElement {
                         duration: 1000,
                     })
                 })
-    }, [linkID])
+    }, [linkID, toast])
     
 
     return (
@@ -143,7 +174,7 @@ export default function Rolled({ roller, linkID }): React.ReactElement {
                             >
                                 <Box pl={{ lg: 75, base: 8 }} pr={{lg: 75, base: 8 }}>
                                     <Text fontSize='2xl' color='white'>
-                                        You've been rickrolled by {roller}!
+                                        You&apos;ve been rickrolled by {roller}!
                                     </Text>
                                 </Box>
                             </Center>
