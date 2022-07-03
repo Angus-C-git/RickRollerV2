@@ -12,7 +12,7 @@ async function bootstrap() {
   // set origin based on environment
   const env = configService.get('NODE_ENV');
   const origin = env === 'PROD' ? 'PROD_ORIGIN' : 'DEV_ORIGIN';
-  
+
   // app settings
   app.enableCors({
     origin: configService.get(origin),
@@ -20,6 +20,6 @@ async function bootstrap() {
   });
   app.use(cookieParser());
 
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
