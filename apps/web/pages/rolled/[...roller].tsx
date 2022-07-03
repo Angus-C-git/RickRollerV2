@@ -129,7 +129,7 @@ export default function Rolled({ roller, linkID }): React.ReactElement {
     useEffect(() => {
         setHasLoaded(false)
         if (linkID)
-            axios.get(`${API_BASE}/details/${linkID}`)
+            axios.get(`${API_BASE}/roll/details/${linkID}`)
                 .then(res => {
                     const { rank, tags, msg }: any = res.data
                     setRank(rank)
