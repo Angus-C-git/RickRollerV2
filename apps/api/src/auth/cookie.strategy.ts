@@ -8,12 +8,12 @@ export const getCookie = (
     token: string,
     maxAge: number = DEFAULT_MAX_AGE,
     name: string = DEFAULT_NAME,
-    secure: boolean = false,
+    secure: boolean = true,
 ) => {   
     
     const options: CookieOptions = {
         httpOnly: true,
-        sameSite: 'lax',
+        sameSite: 'none',
         secure: secure, 
         maxAge: maxAge,
     };
