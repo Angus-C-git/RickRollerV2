@@ -27,6 +27,7 @@ import { BsFillLightningChargeFill } from 'react-icons/bs'
 import axios from 'axios'
 import YouTube from 'react-youtube'
 import Nav from '../../components/Nav'
+import { API_BASE } from '../../utils/constants'
 
 
 interface LinkInfo {
@@ -79,7 +80,6 @@ export interface Options {
  */
 export default function Rolled({ roller, linkID }): React.ReactElement {
     const avatarEndpoint = 'https://avatars.dicebear.com/api/initials/'
-    const API_BASE = 'http://localhost:3000/roll'
     const toast = useToast()
 
     const [ hasLoaded, setHasLoaded ] = useState(false)
