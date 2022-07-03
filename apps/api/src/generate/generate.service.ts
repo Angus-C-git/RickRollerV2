@@ -9,6 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { User, UserDocument } from 'src/users/users.schema';
 import { DATE_OPTIONS } from 'src/globals/dates';
+import { API_BASE } from 'src/globals/urls';
 
 @Injectable()
 export class GenerateService {
@@ -67,7 +68,7 @@ export class GenerateService {
     const body = {
       'dynamicLinkInfo': {
         'domainUriPrefix': DOMAIN_URI_PREFIX,
-        'link': `${LINK_PREFIX}/${newLink._id}`,
+        'link': `${API_BASE}/roll/${newLink._id}`,
       }
     }
 

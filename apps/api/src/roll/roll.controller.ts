@@ -1,4 +1,5 @@
 import { Controller, Get, Param, Redirect } from '@nestjs/common';
+import { WEB_BASE } from 'src/globals/urls';
 import { RollService } from './roll.service';
 
 @Controller('roll')
@@ -19,7 +20,7 @@ export class RollController {
         const rollers_username = await this.rollService.roll(linkId);
        
         return {
-            url: `http://localhost:3002/rolled/${rollers_username}/${linkId}`,
+            url: `${WEB_BASE}/rolled/${rollers_username}/${linkId}`,
         }
     }
 
