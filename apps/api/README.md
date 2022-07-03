@@ -57,5 +57,5 @@ git subtree push --prefix apps/api/ heroku main
 heroku config:set JWT_SECRET=<SECRET>
 heroku config:set "MONGO_URI=<CONNECT-URI>"
 heroku config:set NODE_ENV=PROD
-
+heroku config:set FIREBASE_API_KEY=<KEY>
 ```
