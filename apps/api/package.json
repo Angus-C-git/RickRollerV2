@@ -28,7 +28,7 @@
     "@nestjs/jwt": "^8.0.0",
     "@nestjs/mongoose": "^9.0.2",
     "@nestjs/passport": "^8.1.0",
-    "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/platform-express": "^8.4.7",
     "@types/cookie-parser": "^1.4.3",
     "@types/passport-jwt": "^3.0.6",
     "@types/request": "^2.48.8",
